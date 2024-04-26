@@ -9,9 +9,8 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
-// Nxpkq688IRKZV2aG
-// assignment10
-console.log(process.env.DB_USER)
+
+
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pekpvn6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -31,12 +30,28 @@ async function run() {
     await client.connect();
 
     const database = client.db("touristDB");
-    const tourists = database.collection("tourists");
+    
+    const touristCollection = database.collection("touristCollection");
+   
 
-    app.post('/addtourist', async(req, res) => {
+    app.get('/tourists', async(req,res) => {
+        const cursor = touristCollection.find();
+        const result = await cursor.toArray();
+        res.send(result)
+    })
+
+    app.get('/tourists/:email', async(req, res) => {
+        const userEmail = req.params.email;
+         const query = { email : userEmail}
+        const result = await touristCollection.find(query).toArray();
+        res.send(result)
+    })
+
+    app.post('/tourists', async(req, res) => {
         const tourist = req.body;
-        console.log(tourist);
-        const result = await tourists.insertOne(tourist);
+        
+        const result = await touristCollection.insertOne(tourist);
+    
         res.send(result);
     })
     // Send a ping to confirm a successful connection
