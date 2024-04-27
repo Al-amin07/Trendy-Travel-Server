@@ -40,15 +40,21 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-
-        app.get('/tourists/:email', async (req, res) => {
-            const email = req.params.email;
-            console.log(email);
-            const query = { email: email };
-            const result = await touristCollection.find(query).toArray();
+        app.get('/tourist', async (req, res) => {
+            const cursor = touristCollection.find();
+            const result = await cursor.toArray();
             res.send(result)
-
         })
+
+        
+
+      app.get('/update/:id', async(req, res) => {
+           const id = req.params.id;
+            console.log(id);
+            const query = { _id: new ObjectId(id) };
+            const result = await touristCollection.findOne(query);
+            res.send(result)
+      })
 
         app.get('/tourists/:id', async (req, res) => {
             const id = req.params.id;
@@ -58,11 +64,58 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/myList/:email', async (req, res) => {
+            const email = req.params.email;
+            
+            const query = { email: email };
+            const result = await touristCollection.find(query).toArray();
+            res.send(result)
+
+        })
+
+     
+
+        app.get('/tourists/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: new ObjectId(id) };
+            const result = await touristCollection.findOne(query);
+            res.send(result)
+        })
+
+        app.put('/update/:id', async(req, res) => {
+            const user = req.body;
+            
+            const id = req.params.id;
+            const query = { _id : new ObjectId(id)};
+            const options = { upsert : true};
+            const updateUser = {
+                $set: {
+                    photo: user.photo,
+                    country: user.country,
+                    spotname: user.spotname,
+                    short: user.short,
+                    location: user.location,
+                    cost: user.cost,
+                    season: user.season,
+                    time: user.time,
+                    visitor: user.visitor
+                }
+            }
+
+            const result = await touristCollection.updateOne(query, updateUser, options);
+            res.send(result)
+
+        })
+
 
 
         app.delete('/tourists/:id', async(req, res) => {
             const id = req.params.id;
             console.log(id)
+            const query = { _id : new ObjectId(id)}
+            const result = await touristCollection.deleteOne(query);
+            res.send(result);
         })
 
 
