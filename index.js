@@ -38,6 +38,7 @@ async function run() {
         app.get('/tourists', async (req, res) => {
             const cursor = touristCollection.find();
             const result = await cursor.toArray();
+            
             res.send(result)
         })
         app.get('/tourist', async (req, res) => {
@@ -50,7 +51,7 @@ async function run() {
 
       app.get('/update/:id', async(req, res) => {
            const id = req.params.id;
-            console.log(id);
+            
             const query = { _id: new ObjectId(id) };
             const result = await touristCollection.findOne(query);
             res.send(result)
@@ -58,7 +59,7 @@ async function run() {
 
         app.get('/tourists/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+            
             const query = { _id: new ObjectId(id) };
             const result = await touristCollection.findOne(query);
             res.send(result)
