@@ -33,6 +33,7 @@ async function run() {
         const database = client.db("touristDB");
 
         const touristCollection = database.collection("touristCollection");
+        const countryCollection = database.collection("countries");
 
 
         app.get('/tourists', async (req, res) => {
@@ -44,6 +45,20 @@ async function run() {
         app.get('/tourist', async (req, res) => {
             const cursor = touristCollection.find();
             const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        app.get('/countries', async(req, res) => {
+            const cursor = countryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        app.get('/countries/:country', async(req, res) => {
+            const country = req.params.country.toLowerCase();
+            console.log(country)
+            const query = { country_name : country}
+            const result = await touristCollection.find(query).toArray();
             res.send(result)
         })
 
@@ -93,7 +108,7 @@ async function run() {
             const updateUser = {
                 $set: {
                     photo: user.photo,
-                    country: user.country,
+                    country_name: user.country_name,
                     spotname: user.spotname,
                     short: user.short,
                     location: user.location,
